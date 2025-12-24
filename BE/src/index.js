@@ -14,8 +14,8 @@ const rundb = async() => {
 rundb()
 
 app.use(express.json());
-app.use(errorHandler);
 app.use('/api', apiroutes);
+app.use(errorHandler);
 
 app.listen(process.env.PORT,()=>{
       console.log(`Server is running on port ${process.env.PORT}`)
