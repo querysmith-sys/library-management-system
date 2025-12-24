@@ -1,7 +1,7 @@
 import express from 'express'
 import pool from './config/db.js'
 import {issueBook, returnBook, calculateFine}  from './services/libraryservices.js'
-import errorHandler from './middleware/errorhandler.js'
+
 const router = express.Router();
 
 

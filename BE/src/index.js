@@ -4,6 +4,7 @@ import express from 'express'
 import pool from  './config/db.js'
 import apiroutes from './app.js'
 import errorHandler from './middleware/errorhandler.js'
+import './services/bookavailablityupdates.js'
 const app = express();
 
 const rundb = async() => {
