@@ -132,6 +132,19 @@ router.get('/generatefineReport', async(req,res) => {
      }
 })
 
+
+router.get('/books', async(req,res) => {
+  try {
+    const totalBooks = await pool.query(`SELECT * FROM books`);
+    if(totalBooks.rowCount === 0) {
+        return res.status(404).json({success:"false", error: "db operation failed"});
+    }
+    return res.status(200).json({success:"true",data:totalBooks});
+  } catch (error) {
+    next(error);
+  }
+})
+
 export default router
 
 
