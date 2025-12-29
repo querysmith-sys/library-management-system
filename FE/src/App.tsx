@@ -1,10 +1,16 @@
-import { Layout } from './components/layout'
+import { IssueReturnpage } from './components/pages/operational'
+import { Memberpage } from './components/pages/member'
 import './App.css'
-
+import { BrowserRouter,Route,Routes } from 'react-router-dom'
 function App() {
   return (
-    <Layout />
-    // <h1 className='bg-red-500 px-20'>hello</h1>
+    
+    <BrowserRouter>
+      <Routes>
+        <Route path="/operational" element={<IssueReturnpage />} />
+        <Route path="/member" element={<Memberpage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
