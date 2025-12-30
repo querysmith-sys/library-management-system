@@ -26,6 +26,20 @@ export function Booktable() {
       }
       fetchtableData()
    },[])
+
+   useEffect(() => {
+    const socket = new WebSocket('ws://localhost:8080');
+    socket.onopen = () => {
+        console.log("WebSocket connection established.");
+    }
+    socket.onmessage = (event) => {
+        const updatedBook = JSON.parse(event.data);
+        settableData((tableData) => {
+            return tableData.map((book) => book.book_id === updatedBook.book_id ? {...book, available_copies: updatedBook.available_copies} : book);
+        })
+    }
+    return () => socket.close();
+   },[])
    const columns = [
     {key:"book_id",label:"Book ID"},
     {key:"title", label:"Title"},

@@ -80,7 +80,7 @@ router.get('/generate-fine-report', async(req,res) => {
 
 // clerk operations
 
-router.get('/issue-book', async(req,res,next) => {
+router.post('/issue-book', async(req,res,next) => {
     try {
         const {book_id, member_id, date} = req.body;
         const regexPatternforDate = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
@@ -105,13 +105,13 @@ router.get('/issue-book', async(req,res,next) => {
         if(transcript == false) {
              return res.status(400).json({success:false, error:"issuebook operation failed"});
         }
-        return res.status(200).json({success:true,data:transcript});
+        return res.status(200).json({receipt:transcript});
     } catch (error) {
         next(error);
     }
 })
 
-router.put('/return-book', async(req,res,next) => {
+router.post('/return-book', async(req,res,next) => {
     try {
         const {transaction_id, book_id, fine_amt} = req.body;
         if(transaction_id == null || book_id == null || fine_amt == null) {

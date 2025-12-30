@@ -11,7 +11,7 @@ const issueBook = async(book_id, member_id, due_date)=>{
             await client.query(`ROLLBACK`)
             return false;
         }
-        const transactionDetails = await client.query(`INSERT INTO transactions (member_id, book_id, due_date) VALUES ($1,$2,$3) RETURNING transaction_id, book_id, issue_date, due_date`,[member_id, book_id, due_date]);
+        const transactionDetails = await client.query(`INSERT INTO transactions (member_id, book_id, due_date) VALUES ($1,$2,$3) RETURNING transaction_id, book_id, issue_date, due_date, member_id`,[member_id, book_id, due_date]);
         await client.query(`COMMIT`);
         broadcast(queryResult.rows[0]);
         return transactionDetails.rows[0];
