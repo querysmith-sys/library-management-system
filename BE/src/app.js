@@ -26,6 +26,23 @@ const checksum = (isbn) => {
   }
 };
 
+// universal operation
+router.get("/books", async (req, res) => {
+  try {
+    const totalBooks = await pool.query(
+      `SELECT * FROM books WHERE removed_at IS NULL`
+    );
+    if (totalBooks.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ success: false, error: "db operation failed" });
+    }
+    return res.status(200).json({ success: true, totalBooks: totalBooks });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // admin operations
 router.post("/add-book", async (req, res, next) => {
   try {
@@ -62,12 +79,10 @@ router.post("/add-book", async (req, res, next) => {
         .json({ success: false, error: "title or author is empty." });
     }
     if (total_copies < 0 || available_copies < 0) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "total_copies and available_copies are invalid",
-        });
+      return res.status(400).json({
+        success: false,
+        error: "total_copies and available_copies are invalid",
+      });
     }
     const queryResult = await pool.query(
       `INSERT INTO books (title, author, isbn, total_copies, available_copies) VALUES ($1, $2, $3, $4, $5)`,
@@ -81,6 +96,135 @@ router.post("/add-book", async (req, res, next) => {
     return res
       .status(200)
       .json({ success: true, message: "book successfully added" });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch("/edit-book", async (req, res, next) => {
+  try {
+    const { title, author, total_copies, available_copies, book_id } = req.body;
+    if (book_id == null) {
+      return res
+        .status(400)
+        .json({ success: false, message: "book_id is required" });
+    }
+    if (typeof book_id !== "number" || !Number.isInteger(book_id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "provide an integer input" });
+    }
+
+    if (title !== undefined) {
+      if (title === null) {
+        return res
+          .status(400)
+          .json({ success: false, message: "title cannot be null" });
+      }
+      if (typeof title !== "string") {
+        return res
+          .status(400)
+          .json({ success: false, message: "provide valid title" });
+      }
+      sanitizedtitle = title.trim();
+      if (sanitizedtitle.length === 0) {
+        return res
+          .status(400)
+          .json({ success: false, error: "title is empty" });
+      }
+    }
+
+    if (author !== undefined) {
+      if (author === null) {
+        return res
+          .status(400)
+          .json({ success: false, message: "author cannot be null" });
+      }
+      if (typeof author !== "string") {
+        return res
+          .status(400)
+          .json({ success: false, message: "provide valid author" });
+      }
+      sanitizedauthor = author.trim();
+      if (sanitizedauthor.length === 0) {
+        return res
+          .status(400)
+          .json({ success: false, error: "author is empty" });
+      }
+    }
+
+    if (total_copies !== undefined) {
+      if (total_copies === null) {
+        return res
+          .status(400)
+          .json({ success: false, message: "total_copies cannot be null" });
+      }
+      if (typeof total_copies !== "number" || !Number.isInteger(total_copies)) {
+        return res
+          .status(400)
+          .json({ success: false, message: "total_copies is of type INT" });
+      }
+    }
+
+    if (available_copies !== undefined) {
+      if (available_copies === null) {
+        return res
+          .status(400)
+          .json({ success: false, message: "total_copies cannot be null" });
+      }
+      if (
+        typeof available_copies !== "number" ||
+        !Number.isInteger(available_copies)
+      ) {
+        return res
+          .status(400)
+          .json({ success: false, message: "total_copies is of type INT" });
+      }
+    }
+
+    if (
+      title == undefined &&
+      author == undefined &&
+      total_copies == undefined &&
+      available_copies == undefined
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "provide any of the InputField to update",
+      });
+    }
+
+    await pool.query(
+      `UPDATE books SET title = COALESCE($1, title), author = COALESCE($2, author), total_copies = COALESCE($3, total_copies), available_copies = COALESCE($4, available_copies) WHERE book_id = $5`,
+      [title, author, total_copies, available_copies, book_id]
+    );
+    return res
+      .status(200)
+      .json({ success: true, message: "member info updated successfully" });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.delete("/archieve-book", async (req, res, next) => {
+  try {
+    const { book_id } = req.body;
+    if (book_id == null) {
+      return res
+        .status(400)
+        .json({ success: false, message: "book_id is required" });
+    }
+    if (typeof book_id !== "number" || !Number.isInteger(book_id)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "provide an integer input" });
+    }
+    await pool.query(`UPDATE books SET removed_at = NOW() WHERE book_id = $1`, [
+      book_id,
+    ]);
+    return res
+      .status(200)
+      .json({ success: true, message: "removed successfully!" });
   } catch (error) {
     next(error);
   }
@@ -194,13 +338,11 @@ router.post("/return-book", async (req, res, next) => {
       `SELECT (CURRENT_DATE - due_date::date) * $1 AS fine FROM transactions WHERE transaction_id = $2 AND book_id = $3 AND CURRENT_TIMESTAMP > due_date`,
       [fine_amt, transaction_id, book_id]
     );
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "returned book operation successfull",
-        fine: result.rowCount == 0 ? 0 : result.rows[0],
-      });
+    res.status(200).json({
+      success: true,
+      message: "returned book operation successfull",
+      fine: result.rowCount == 0 ? 0 : result.rows[0],
+    });
     try {
       broadcast(ReturnedData.rows[0]);
     } catch (error) {
@@ -211,30 +353,14 @@ router.post("/return-book", async (req, res, next) => {
   }
 });
 
-router.get("/books", async (req, res) => {
-  try {
-    const totalBooks = await pool.query(`SELECT * FROM books`);
-    if (totalBooks.rowCount === 0) {
-      return res
-        .status(404)
-        .json({ success: false, error: "db operation failed" });
-    }
-    return res.status(200).json({ success: true, totalBooks: totalBooks });
-  } catch (error) {
-    next(error);
-  }
-});
-
 router.post("/add-members", async (req, res, next) => {
   try {
     const { membername, memberemail } = req.body;
     if (membername == null || memberemail == null) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "membername or memberemail is missing.",
-        });
+      return res.status(400).json({
+        success: false,
+        error: "membername or memberemail is missing.",
+      });
     }
     if (typeof membername !== "string" || typeof memberemail !== "string") {
       return res
@@ -267,7 +393,9 @@ router.post("/add-members", async (req, res, next) => {
 
 router.get("/members", async (req, res, next) => {
   try {
-    const result = await pool.query(`SELECT * FROM members WHERE deleted_at IS NULL`);
+    const result = await pool.query(
+      `SELECT * FROM members WHERE deleted_at IS NULL`
+    );
     if (result.rowCount === 0) {
       return res
         .status(404)
@@ -332,12 +460,10 @@ router.patch("/edit-members", async (req, res, next) => {
     }
 
     if (membername === undefined && memberemail === undefined) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "provide membername or memberemail to update",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "provide membername or memberemail to update",
+      });
     }
 
     await pool.query(
@@ -370,7 +496,9 @@ router.delete("/archieve-members", async (req, res, next) => {
       `UPDATE members SET deleted_at = NOW() WHERE member_id = $1`,
       [member_id]
     );
-    return res.status(200).json({success:true, message:"deleted successfully!"})
+    return res
+      .status(200)
+      .json({ success: true, message: "deleted successfully!" });
   } catch (error) {
     next(error);
   }
