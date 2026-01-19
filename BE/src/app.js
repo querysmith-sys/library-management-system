@@ -27,7 +27,7 @@ const checksum = (isbn) => {
 };
 
 // universal operation
-router.get("/books", async (req, res) => {
+router.get("/books", async (req, res, next) => {
   try {
     const totalBooks = await pool.query(
       `SELECT * FROM books WHERE removed_at IS NULL`
@@ -114,6 +114,9 @@ router.patch("/edit-book", async (req, res, next) => {
         .status(400)
         .json({ success: false, message: "provide an integer input" });
     }
+
+    let sanitizedtitle;
+    let sanitizedauthor;
 
     if (title !== undefined) {
       if (title === null) {
