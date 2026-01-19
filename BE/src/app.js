@@ -263,8 +263,9 @@ router.get("/generate-fine-report", async (req, res) => {
 });
 
                        // clerk Management routes
-router.post("/add-clerk", async (req, res) => {
-    const {clerkname, clerkemail} = req.body;
+router.post("/add-clerk", async (req, res, next) => {
+    try {
+      const {clerkname, clerkemail} = req.body;
     if(clerkname == null || clerkemail == null) {
         return res.status(400).json({success: false, error: "missing input"});
     }
@@ -282,6 +283,9 @@ router.post("/add-clerk", async (req, res) => {
    return res
       .status(200)
       .json({ success: true, message: "clerk successfully added" });
+    } catch (error) {
+      next(error)
+    }
 })
 
 router.get("/clerks", async (req, res, next) => {
