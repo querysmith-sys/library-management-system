@@ -1,5 +1,31 @@
+import { useEffect, useState } from "react";
 import AdminLayout from "../adminLayout";
+import axios from "axios";
+
+interface StatsData {
+  total_books: number;
+  total_members: number;
+  total_clerks: number;
+  overdue_books: number;
+}
+
+
+
 export function AdminPage() {
+const [statsData, setDashboardData] = useState<StatsData | null>(null);
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/api/admin-stats");
+        setDashboardData(res.data.statsData);
+      } catch (error) {
+        console.log("Axios FetchDashboardData Request Failed:", error);
+      }
+    }
+    fetchDashboardData();
+
+  })
+
   return (
     <AdminLayout>
         {/* DASHBOARD CONTENT */}
@@ -12,19 +38,19 @@ export function AdminPage() {
             <ul className="space-y-2 text-sm">
               <li className="flex justify-between">
                 <span>Total Books</span>
-                <span className="font-semibold">0</span>
+                <span className="font-semibold">{statsData?.total_books || 0}</span>
               </li>
               <li className="flex justify-between">
                 <span>Total Members</span>
-                <span className="font-semibold">0</span>
+                <span className="font-semibold">{statsData?.total_members || 0}</span>
               </li>
               <li className="flex justify-between">
                 <span>Total Clerks</span>
-                <span className="font-semibold">0</span>
+                <span className="font-semibold">{statsData?.total_clerks || 0}</span>
               </li>
               <li className="flex justify-between text-red-600">
                 <span>Overdue Books</span>
-                <span className="font-semibold">0</span>
+                <span className="font-semibold">{statsData?.overdue_books || 0}</span>
               </li>
             </ul>
           </div>

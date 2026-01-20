@@ -1,4 +1,16 @@
+import { useNavigate } from "react-router-dom";
 function AdminLayout({ children }: { children?: React.ReactNode }) {
+  const navigate = useNavigate()
+  function GoToClerkManagement() {
+    navigate('/clerk');
+  }
+
+  function GoToBookManagement() {
+    navigate('/book');
+  }
+
+
+
   return (
     <div className="min-h-screen bg-gray-100">
       <div className="max-w-6xl mx-auto px-4 py-6">
@@ -9,10 +21,14 @@ function AdminLayout({ children }: { children?: React.ReactNode }) {
           </div>
 
           <div className="flex gap-3">
-            <button className="px-4 py-2 rounded-md border-2 border-blue-600 text-blue-600 hover:bg-blue-50">
+            <button 
+            onClick={GoToClerkManagement}
+            className="px-4 py-2 rounded-md border-2 border-blue-600 text-blue-600 hover:bg-blue-50">
               Clerk Management
             </button>
-            <button className="px-4 py-2 rounded-md border-2 border-blue-600 text-blue-600 hover:bg-blue-50">
+            <button 
+            onClick={GoToBookManagement}
+            className="px-4 py-2 rounded-md border-2 border-blue-600 text-blue-600 hover:bg-blue-50">
               Book Management
             </button>
           </div>
