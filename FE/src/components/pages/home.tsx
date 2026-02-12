@@ -35,7 +35,7 @@ function Home() {
               <button
                 className="px-6 py-3 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 transition"
                 onClick={() => {
-                  navigate("/admin") //later change to admin login
+                  navigate("/auth/login") //later change to admin login
                 }}
               >
                 Admin Login
@@ -44,7 +44,7 @@ function Home() {
               <button
                 className="px-6 py-3 rounded-lg border border-gray-300 text-gray-700 font-medium hover:bg-gray-100 transition"
                 onClick={() => {
-                  navigate("/clerk") //later change to clerk login
+                  navigate("/auth/login") //later change to clerk login
                 }}
               >
                 Clerk Login

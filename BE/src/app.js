@@ -91,8 +91,8 @@ router.post("/add-book", async (req, res, next) => {
     );
     if (queryResult.rowCount == 0) {
       return res
-        .status(500)
-        .json({ success: false, error: "query was not excepted" });
+        .status(400)
+        .json({ success: false, error: "query was not executed" });
     }
     return res
       .status(200)

@@ -6,6 +6,9 @@ import { AdminPage } from './components/pages/admin'
 import ClerkManagementPage from './components/pages/clerk'
 import BookManagementPage from './components/pages/book'
 import Home from './components/pages/home'
+import SignupPage from './components/pages/auth/signup-page'
+import LoginPage from './components/pages/auth/login-page'
+
 function App() {
   return (
     
@@ -17,6 +20,10 @@ function App() {
         <Route path="/clerk" element={<ClerkManagementPage />} />
         <Route path="/book" element={<BookManagementPage />} />
         <Route path="/" element={<Home />} />
+      </Routes>
+      <Routes>
+        <Route path="/auth/register" element={<SignupPage/>}/>
+        <Route path="/auth/login" element={<LoginPage/>}/>
       </Routes>
     </BrowserRouter>
   )

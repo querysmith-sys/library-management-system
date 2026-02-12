@@ -26,7 +26,7 @@ export function Header() {
           onClick={GotoManageBook}
           className="px-4 py-2 rounded text-[16px] border-2 border-blue-700 hover:bg-gray-50 cursor-pointer"
         >
-          Manage books
+          Manage Operations
         </button>
       </div>
     </div>
