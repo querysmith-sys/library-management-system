@@ -5,7 +5,9 @@ import cors from "cors";
 import pool from "./config/db.js";
 import apiroutes from "./app.js";
 import errorHandler from "./middleware/errorhandler.js";
+import authRouter from "./routes/auth.js";
 import "./services/websockets.js";
+
 const app = express();
 
 app.use(
@@ -22,6 +24,7 @@ rundb();
 
 app.use(express.json());
 app.use("/api", apiroutes);
+app.use("/auth", authRouter);
 app.use(errorHandler);
 
 app.listen(process.env.PORT, () => {

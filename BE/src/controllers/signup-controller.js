@@ -1,10 +1,8 @@
-import express from "express";
-import { signupSchema } from "../validation/signup-validation";
-import pool from "../config/db";
-import bcrypt, { genSalt } from "bcrypt";
-const signupController = express.Router();
+import signupSchema from "../validation/signup-validation.js";
+import pool from "../config/db.js";
+import bcrypt from "bcrypt";
 
-signupController.post("/signup", async (req, res, next) => {
+const signupController = async (req, res, next) => {
   const result = signupSchema.safeParse(req.body);
   if (!result.success) {
     res.status(400).json({ message: "Enter Valid Credentials!" });
@@ -12,10 +10,10 @@ signupController.post("/signup", async (req, res, next) => {
   try {
     const { username, email, password } = result.data;
 
-    const hashedPassword = bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const queryResult = await pool.query(
-      `INSERT INTO users(username, email, password) VALUES ($1, $2, $3, $4)`,
+      `INSERT INTO users(username, email, password_hash) VALUES ($1, $2, $3)`,
       [username, email, hashedPassword],
     );
 
@@ -25,10 +23,10 @@ signupController.post("/signup", async (req, res, next) => {
         .json({ success: false, message: "query is not executed" });
       return;
     }
-    res.status(200).json({ success: false, message: "You are signed UP!" });
-  } catch (error) { 
-    next(error)
+    res.status(200).json({ success: true, message: "You are signed UP!" });
+  } catch (error) {
+    next(error);
   }
-});
+};
 
 export default signupController;
