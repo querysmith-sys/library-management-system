@@ -6,6 +6,7 @@ import pool from "./config/db.js";
 import apiroutes from "./app.js";
 import errorHandler from "./middleware/errorhandler.js";
 import authRouter from "./routes/auth.js";
+import clerkManagementRouter from "./routes/clerk-management.js";
 import "./services/websockets.js";
 
 const app = express();
@@ -25,6 +26,7 @@ rundb();
 app.use(express.json());
 app.use("/api", apiroutes);
 app.use("/auth", authRouter);
+app.use("/api", clerkManagementRouter);
 app.use(errorHandler);
 
 app.listen(process.env.PORT, () => {

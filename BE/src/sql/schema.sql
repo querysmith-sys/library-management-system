@@ -40,12 +40,12 @@ CREATE TABLE
         CONSTRAINT fk_member FOREIGN KEY (member_id) REFERENCES members (member_id),
         CONSTRAINT fk_book FOREIGN KEY (book_id) REFERENCES books (book_id)
     );
--- create clerks table
-CREATE TABLE
-    clerks (
-        clerk_id SERIAL PRIMARY KEY,
-        clerkname VARCHAR(50) NOT NULL,
-        clerkemail VARCHAR(50) UNIQUE NOT NULL,
-        created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-        deleted_at TIMESTAMP DEFAULT NULL
-    );
+-- -- create clerks table
+-- CREATE TABLE
+--     clerks (
+--         clerk_id SERIAL PRIMARY KEY,
+--         clerkname VARCHAR(50) NOT NULL,
+--         clerkemail VARCHAR(50) UNIQUE NOT NULL,
+--         created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+--         deleted_at TIMESTAMP DEFAULT NULL
+--     );

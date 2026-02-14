@@ -1,5 +1,3 @@
-
-
 const verifyRole = async (req, res, next) => {
     try {
         if (req.role !== "admin") {
