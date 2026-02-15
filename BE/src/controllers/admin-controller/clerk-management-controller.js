@@ -1,8 +1,9 @@
 import crypto from "crypto";
+import pool from "../../config/db.js";
 // clerk Management routes
 
 
-const addClerk = async (req, res, next) => {
+export const addClerk = async (req, res, next) => {
     try {
       const {clerkname, clerkemail} = req.body;
     if(clerkname == null || clerkemail == null) {
@@ -29,9 +30,9 @@ const addClerk = async (req, res, next) => {
     }
 }
 
-const getClerks = async (req, res, next) => {
+export const getClerks = async (req, res, next) => {
     try {
-    const result = await pool.query(`SELECT * FROM users WHERE deleted_at IS NULL`);
+    const result = await pool.query(`SELECT * FROM users WHERE deleted_at IS NULL AND role = 'clerk'`);
     if(result.rowCount === 0) {
       return res
         .status(404)
@@ -44,7 +45,7 @@ const getClerks = async (req, res, next) => {
 
 }
 
-const editClerk = async (req, res, next) => {
+export const editClerk = async (req, res, next) => {
     try {
       const {clerkname, clerkemail, clerk_id} = req.body;
        if (clerk_id == null) {
@@ -115,7 +116,7 @@ const editClerk = async (req, res, next) => {
     }
 }
 
-const deleteClerk = async (req, res, next) => {
+export const deleteClerk = async (req, res, next) => {
     try {
     const {clerk_id} = req.body;
     if (clerk_id == null) {
@@ -135,4 +136,4 @@ const deleteClerk = async (req, res, next) => {
 }
 
 
-export default {addClerk, getClerks, editClerk, deleteClerk};
+// export default {addClerk, getClerks, editClerk, deleteClerk};

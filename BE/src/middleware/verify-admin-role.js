@@ -1,6 +1,6 @@
-const verifyRole = async (req, res, next) => {
+const verifyAdminRole = async (req, res, next) => {
     try {
-        if (req.role !== "admin") {
+        if (req.user.role !== "admin") {
             return res.status(401).json({success:false, message:"Forbidden"});
         }
         next();
@@ -9,4 +9,4 @@ const verifyRole = async (req, res, next) => {
     }
 }
 
-export default verifyRole;
+export default verifyAdminRole;
