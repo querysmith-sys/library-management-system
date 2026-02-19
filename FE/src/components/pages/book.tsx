@@ -1,7 +1,7 @@
 import { Booktable } from "../booktable";
 import AdminLayout from "../adminLayout";
 import { useState } from "react";
-import axios from "axios";
+import api from "../../api/axios";
 
 function BookManagementPage() {
   const [opendialogbox, setopendialogbox] = useState<string>("");
@@ -29,7 +29,7 @@ function BookManagementPage() {
   async function addbookOperation() {
     try {
       const body = { title, author, isbn, total_copies, available_copies };
-      const res = await axios.post("http://localhost:3000/api/add-book", body);
+      const res = await api.post("/api/admin/add-book", body);
       alert(res.data.message);
     } catch (error) {
       console.log("Axios Book Request Failed:", error);
@@ -38,9 +38,9 @@ function BookManagementPage() {
   async function editbookOperation() {
     try {
       const body = { title, author, total_copies, available_copies, book_id };
-      const res = await axios.patch(
-        `http://localhost:3000/api/edit-book`,
-        body
+      const res = await api.patch(
+        `/api/admin/edit-book`,
+        body,
       );
       alert(res.data.message);
     } catch (error) {
@@ -50,8 +50,8 @@ function BookManagementPage() {
   async function removebookOperation() {
     try {
       const body = { book_id };
-      const res = await axios.delete(
-        "http://localhost:3000/api/archieve-book",
+      const res = await api.delete(
+        `/api/admin/archieve-book`,
         { data: body }
       );
       alert(res.data.message);

@@ -32,18 +32,28 @@ const LoginController = async (req, res, next) => {
         const access_Token = jwt.sign({user_id:queryResult.rows[0].user_id,role:queryResult.rows[0].role}, ACCESS_TOKEN_KEY, {expiresIn:'15m'});
         const refresh_Token = jwt.sign({user_id:queryResult.rows[0].user_id}, RFFRESH_TOKEN_KEY, {expiresIn:'7d'});
 
+
+
+        // sending access token as httponly cookie
+        res.cookie("accessToken",access_Token,{
+            httpOnly:true, // for XSS
+            secure: false, // make it true for prod
+            sameSite:true, // csrf protection
+            path:"/", // allow sending to all endpoints
+            maxAge: 15 * 60 * 1000
+        })
         // //  here, crreated the  http only cookie
         res.cookie("refreshToken",refresh_Token,{
             httpOnly:true, // for XSS
             secure: false, // make it true for prod
-            sameSite:true, // csrf protection
+            sameSite:"strict", // csrf protection
             path:"/refresh", // allowed  sending this cookie to only refresh end point
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
 
         await pool.query(`INSERT INTO refresh_tokens(user_id, token_hash, user_role) VALUES ($1, $2, $3)`, [queryResult.rows[0].user_id, refresh_Token, queryResult.rows[0].role])
 
-        res.status(200).json({message:"logged In", accessToken:access_Token});
+        res.status(200).json({message:"logged In"});
     } catch (error) {
         next(error);
     }

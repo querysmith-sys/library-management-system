@@ -1,8 +1,38 @@
+import {  useState } from "react";
 import { Footer } from "../../footer";
+import api from "../../../api/axios";
 import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
     const navigate = useNavigate();
+    const [username, setUsername] = useState<string>();
+    const [password, setPassword] = useState<string>();
+    
+
+    async function handleLogin () {
+      const body = {username,password};
+      try {
+        await api.post("/auth/login", body);
+        const res = await api.get("/api/me");
+        if(res.data.role === "admin"){
+          navigate("/admin");
+        }else if (res.data.role === "clerk") {
+          navigate("/operational");
+        }
+      } catch (error) {
+        alert("Login failed. Please check your credentials and try again.")
+      }
+    }
+
+    function handleClear () {
+      setUsername("");
+      setPassword("");
+    }
+
+
+
+
+
   return (
     <div className="min-h-screen bg-white p-8 flex flex-col items-center font-sans text-gray-800">
       <div className="w-full max-w-4xl">
@@ -42,6 +72,8 @@ const LoginPage = () => {
                 <input
                   type="text"
                   placeholder="Enter username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </div>
@@ -53,16 +85,18 @@ const LoginPage = () => {
                 <input
                   type="password"
                   placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
                 />
               </div>
             </div>
 
             <div className="mt-8 flex gap-4">
-              <button className="px-6 py-2 text-sm font-medium text-black border border-black rounded hover:bg-gray-50 transition-colors">
+              <button onClick={handleLogin} className="px-6 py-2 text-sm font-medium text-black border border-black rounded hover:bg-gray-50 transition-colors">
                 Log In
               </button>
-              <button className="px-6 py-2 text-sm font-medium text-black border border-black rounded hover:bg-gray-50 transition-colors">
+              <button onClick={handleClear} className="px-6 py-2 text-sm font-medium text-black border border-black rounded hover:bg-gray-50 transition-colors">
                 Clear Form
               </button>
             </div>

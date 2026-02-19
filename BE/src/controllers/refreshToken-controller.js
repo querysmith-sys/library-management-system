@@ -9,10 +9,12 @@ const refreshTokenRouter = async (req, res, next) => {
       .json({ success: false, message: "refreshToken is Missing" });
   }
 
-  const decoded_refreshToken = jwt.verify(
+  try {
+    const decoded_refreshToken = jwt.verify(
     refreshToken,
     process.env.REFRESH_TOKEN,
   );
+
 
   const queryResult = await pool.query(
     `SELECT * FROM refresh_tokens WHERE user_id = $1`,
@@ -32,7 +34,30 @@ const refreshTokenRouter = async (req, res, next) => {
     { expiresIn: "15m" },
   );
 
-  res.status(200).json({ success: true, new_accessToken: new_access_Token });
-};
+  // send as httponly cookies
+  res.cookie("accessToken", new_access_Token, {
+    httpOnly: true, // for XSS
+    secure: false, // make it true for prod
+    sameSite: true, // csrf protection
+    path: "/", // allow sending to all endpoints
+    maxAge: 15 * 60 * 1000,
+  });
+
+  res
+    .status(200)
+    .json({
+      success: true,
+      message: "New Access Token Generated Successfully",
+    });
+}
+
+ catch (error) {
+    // check exipiry
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ success: false, message: "Refresh Token Expired" });
+    }
+    return res.status(401).json({ success: false, message: "Invalid Refresh Token" });
+  }
+}
 
 export default refreshTokenRouter;

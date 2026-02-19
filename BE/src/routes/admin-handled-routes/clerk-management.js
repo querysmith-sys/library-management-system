@@ -7,7 +7,7 @@ const clerkManagementRouter = express.Router();
 
 clerkManagementRouter.post("/admin/add-clerk", TokenVerification, verifyAdminRole, addClerk);
 clerkManagementRouter.get("/admin/clerks", TokenVerification, verifyAdminRole, getClerks);
-clerkManagementRouter.patch("/admin/edit-clerks", TokenVerification, verifyAdminRole, editClerk);
+clerkManagementRouter.patch("/admin/edit-clerk", TokenVerification, verifyAdminRole, editClerk);
 clerkManagementRouter.delete("/admin/archieve-clerk", TokenVerification, verifyAdminRole, deleteClerk)
 
 

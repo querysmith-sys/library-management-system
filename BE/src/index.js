@@ -10,6 +10,7 @@ import bookManagementRouter from "./routes/admin-handled-routes/book-mangement.j
 import adminStatsRouter from "./routes/admin-handled-routes/admin-stats.js";
 import memberManagementRouter from "./routes/clerk-handled-routes/member-management-routes.js";
 import bookOperationRouter from "./routes/clerk-handled-routes/book-operations-routes.js";
+import knowYourselfRouter from "./routes/knowYourself-routes.js";
 import "./services/websockets.js";
 import cookieParser from  "cookie-parser";
 import app from "./app.js";
@@ -35,6 +36,7 @@ app.use("/auth", authRouter);
 app.use("/api", clerkManagementRouter);
 app.use("/api", bookManagementRouter);
 app.use("/api", adminStatsRouter);
+app.use("/api", knowYourselfRouter);
 app.use("/api", memberManagementRouter);
 app.use("/api", bookOperationRouter);
 

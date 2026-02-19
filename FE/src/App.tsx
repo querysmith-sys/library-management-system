@@ -6,23 +6,25 @@ import { AdminPage } from './components/pages/admin'
 import ClerkManagementPage from './components/pages/clerk'
 import BookManagementPage from './components/pages/book'
 import Home from './components/pages/home'
-import SignupPage from './components/pages/auth/signup-page'
 import LoginPage from './components/pages/auth/login-page'
+import { Forbidden } from './components/pages/forbidden'
+import ProtectedRoute from './components/protectedRoute'
+
 
 function App() {
   return (
     
     <BrowserRouter>
       <Routes>
-        <Route path="/operational" element={<IssueReturnpage />} />
-        <Route path="/member" element={<Memberpage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/clerk" element={<ClerkManagementPage />} />
-        <Route path="/book" element={<BookManagementPage />} />
+        <Route path="/operational" element={<ProtectedRoute><IssueReturnpage /></ProtectedRoute>} />
+        <Route path="/member" element={<ProtectedRoute><Memberpage /></ProtectedRoute>} />
+        <Route path="/admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
+        <Route path="/clerk" element={<ProtectedRoute><ClerkManagementPage /></ProtectedRoute>} />
+        <Route path="/book" element={<ProtectedRoute><BookManagementPage /></ProtectedRoute>} />
         <Route path="/" element={<Home />} />
+        <Route path="/forbidden" element={<Forbidden />} />
       </Routes>
       <Routes>
-        <Route path="/auth/register" element={<SignupPage/>}/>
         <Route path="/auth/login" element={<LoginPage/>}/>
       </Routes>
     </BrowserRouter>

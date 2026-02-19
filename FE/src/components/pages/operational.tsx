@@ -1,6 +1,6 @@
 import { Layout } from "../layout";
 import { Booktable } from "../booktable";
-import axios from "axios";
+import api from "../../api/axios";
 import { useState } from "react";
 
 interface ReceiptData {
@@ -38,8 +38,8 @@ export function IssueReturnpage() {
         member_id: memberId,
         date: dueDate,
       };
-      const res = await axios.post(
-        "http://localhost:3000/api/issue-book",
+      const res = await api.post(
+        `/api/clerk/issue-book`,
         body
       );
       if (res.status === 200) {
@@ -58,8 +58,8 @@ export function IssueReturnpage() {
         book_id: bookIDReturn,
         fine_amt: fineAmount,
       };
-      const res = await axios.post(
-        "http://localhost:3000/api/return-book",
+      const res = await api.post(
+        `/api/clerk/return-book`,
         body
       );
       setreturnData(res.data);

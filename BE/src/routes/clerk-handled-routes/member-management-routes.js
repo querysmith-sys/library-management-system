@@ -6,8 +6,8 @@ import {addMember, editMember, deleteMember, membersList} from "../../controller
 const memberManagementRouter = express.Router();
 
 memberManagementRouter.post("/clerk/add-member", TokenVerification, verifyClerkRole, addMember);
-memberManagementRouter.get("/clerk/members", TokenVerification, verifyClerkRole, editMember);
-memberManagementRouter.patch("/clerk/edit-member", TokenVerification, verifyClerkRole, deleteMember);
-memberManagementRouter.delete("/clerk/archieve-member", TokenVerification, verifyClerkRole, membersList);
+memberManagementRouter.get("/clerk/members", TokenVerification, verifyClerkRole, membersList);
+memberManagementRouter.patch("/clerk/edit-member", TokenVerification, verifyClerkRole, editMember);
+memberManagementRouter.delete("/clerk/archieve-member", TokenVerification, verifyClerkRole, deleteMember);
 
 export default memberManagementRouter;

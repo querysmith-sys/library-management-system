@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Layout } from "../layout";
 import { Membertable } from "../membertable";
-import axios from "axios";
+import api from "../../api/axios";
 export function Memberpage() {
   const [OpenAddMember, setOpenAddMember] = useState(false);
   const [OpenEditMember, setOpenEditMember] = useState(false);
@@ -28,10 +28,7 @@ export function Memberpage() {
         membername: MemberName,
         memberemail: MemberEmail,
       };
-      const res = await axios.post(
-        "http://localhost:3000/api/add-members",
-        body
-      );
+      const res = await api.post("/api/clerk/add-members", body);
       if (res) {
         alert(res.data.message);
       }
@@ -47,8 +44,8 @@ export function Memberpage() {
         memberemail: MemberEmail,
         member_id: memberID,
       };
-      const res = await axios.patch(
-        "http://localhost:3000/api/edit-members",
+      const res = await api.patch(
+        `/api/clerk/edit-members`,
         body
       );
       if (res) {
@@ -64,9 +61,9 @@ export function Memberpage() {
       const body = {
         member_id: memberID,
       };
-      const res = await axios.delete(
-        "http://localhost:3000/api/archieve-members",
-        { data: body }
+      const res = await api.delete(
+        `/api/clerk/archieve-members`,
+         { data: body }
       );
       if (res) {
         alert(res.data.message);

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "../adminLayout";
-import axios from "axios";
+import api from "../../api/axios";
 
 interface StatsData {
   total_books: number;
@@ -16,7 +16,7 @@ const [statsData, setDashboardData] = useState<StatsData | null>(null);
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/admin-stats");
+        const res = await api.get("/api/admin/stats");
         setDashboardData(res.data.statsData);
       } catch (error) {
         console.log("Axios FetchDashboardData Request Failed:", error);
@@ -24,7 +24,7 @@ const [statsData, setDashboardData] = useState<StatsData | null>(null);
     }
     fetchDashboardData();
 
-  })
+  }, [])
 
   return (
     <AdminLayout>

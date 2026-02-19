@@ -1,7 +1,7 @@
 const verifyAdminRole = async (req, res, next) => {
     try {
         if (req.user.role !== "admin") {
-            return res.status(401).json({success:false, message:"Forbidden"});
+            return res.status(403).json({success:false, message:"Forbidden"});
         }
         next();
     } catch (error) {

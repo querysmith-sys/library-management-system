@@ -1,5 +1,5 @@
 import { Basetable } from "./basetable";
-import axios from "axios";
+import api from "../api/axios";
 import { useEffect, useState } from "react";
 
 interface TableData {
@@ -16,7 +16,7 @@ export function Booktable() {
   useEffect(() => {
     const fetchtableData = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/api/books");
+        const res = await api.get("/api/books");
         settableData(res.data.totalBooks.rows);
       } catch (error) {
         console.log("Error fetching table data.");

@@ -1,7 +1,8 @@
 import { Clerktable } from "../clerktable";
 import AdminLayout from "../adminLayout";
 import { useState } from "react";
-import axios from "axios";
+import api from "../../api/axios";
+
 function ClerkManagementPage() {
   const [opendialogbox, setopendialogbox] = useState<string>("");
   const [clerkname, setClerkName] = useState<string | undefined>(undefined);
@@ -13,9 +14,9 @@ function ClerkManagementPage() {
       const body = {
         clerk_id: clerkID,
       };
-      const res = await axios.delete(
-        "http://localhost:3000/api/archieve-clerk",
-        { data: body }
+      const res = await api.delete(
+        `/api/admin/archieve-clerk`,
+        { data: body },
       );
       alert(res.data.message);
     } catch (error) {
@@ -29,8 +30,8 @@ function ClerkManagementPage() {
         clerkname: clerkname,
         clerkemail: clerkemail,
       };
-      const res = await axios.patch(
-        "http://localhost:3000/api/edit-clerk",
+      const res = await api.patch(
+        `/api/admin/edit-clerk`,
         body
       );
       alert(res.data.message);
@@ -44,7 +45,7 @@ function ClerkManagementPage() {
         clerkname: clerkname,
         clerkemail: clerkemail,
       };
-      const res = await axios.post("http://localhost:3000/api/add-clerk", body);
+      const res = await api.post("/api/admin/add-clerk", body);
       alert(res.data.message);
     } catch (error) {
       console.log("Axios AddClerk Request Failed:", error);

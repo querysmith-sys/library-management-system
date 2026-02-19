@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../api/axios";
 import { useEffect, useState } from "react";
 import { Basetable } from "./basetable";
 
@@ -13,7 +13,7 @@ export function Membertable() {
   const [tableData, settableData] = useState<MemberTableData[]>([]);
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get("http://localhost:3000/api/members");
+      const res = await api.get("/api/clerk/members");
       settableData(res.data.membersData.rows);
     };
     fetchData();
