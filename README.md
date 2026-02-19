@@ -63,9 +63,12 @@ The application supports real-time inventory updates, transactional integrity, a
 BE/
 ├── src/
 │   ├── config/
+|   ├── controllers/
 │   ├── middleware/
 │   ├── services/
+|   ├── routes/
 │   ├── sql/
+|   ├── validation
 │   ├── app.js
 │   └── index.js
 
@@ -78,16 +81,10 @@ FE/
 ├── src/
 │   ├── assets/
 │   ├── components/
-│   │   ├── Button/
-│   │   ├── pages/
-│   │   ├── layout.tsx
-│   │   ├── adminLayout.tsx
-│   │   ├── header.tsx
-│   │   ├── footer.tsx
-│   │   ├── booktable.tsx
-│   │   └── membertable.tsx
+│   ├── api/
 │   ├── App.tsx
 │   └── main.tsx
+
 
 ```
 
